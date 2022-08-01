@@ -1,5 +1,10 @@
 FROM ubuntu:latest as ismrmrd_base
 
+ENV http_proxy='http://webproxy.berlin.ptb.de:8080'
+ENV HTTP_PROXY='http://webproxy.berlin.ptb.de:8080'
+ENV https_proxy='http://webproxy.berlin.ptb.de:8080'
+ENV HTTPS_PROXY='http://webproxy.berlin.ptb.de:8080'
+
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/Chicago
 
