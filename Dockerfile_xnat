@@ -48,4 +48,6 @@ COPY --from=ismrmrd_base /usr/local/lib/libismrmrd.tar.gz   /usr/local/lib/
 RUN cd /usr/local/lib && tar -zxvf libismrmrd.tar.gz && rm libismrmrd.tar.gz && ldconfig
 
 # Copy a script that finds all .dat files in a directory and applies the converter to it
-COPY mr_data_conversion.sh /home/
+COPY ./xnat/mr_data_conversion.sh /home/
+RUN chmod 777 /home/mr_data_conversion.sh
+ENTRYPOINT ["/home/mr_data_conversion.sh"]
