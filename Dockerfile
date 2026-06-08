@@ -1,9 +1,9 @@
-FROM ubuntu:latest as ismrmrd_base
+FROM ubuntu:24.04 as ismrmrd_base
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/Chicago
 
-RUN apt-get update && apt-get install -y git cmake g++ libhdf5-dev libxml2-dev libxslt1-dev libboost-dev libboost-program-options-dev libboost-system-dev libboost-filesystem-dev libboost-thread-dev libboost-timer-dev libboost-program-options-dev libpugixml-dev
+RUN apt-get update && apt-get install -y git cmake g++ libhdf5-dev libxml2-dev libxslt1-dev libboost-dev libboost-program-options-dev libboost-system-dev libboost-filesystem-dev libboost-thread-dev libboost-timer-dev libboost-locale-dev libpugixml-dev
 
 RUN  mkdir -p /opt/code
 
@@ -17,7 +17,7 @@ RUN cd /opt/code && \
     git checkout $(cat /opt/code/siemens_to_ismrmrd/dependencies/ismrmrd | xargs) && \
     mkdir build && \
     cd build && \
-    cmake ../ && \
+    cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DBUILD_DYNAMIC=ON ../ && \
     make -j $(nproc) && \
     make install
 
@@ -25,7 +25,7 @@ RUN cd /opt/code && \
 RUN cd /opt/code/siemens_to_ismrmrd && \
     mkdir build && \
     cd build && \
-    cmake ../ && \
+    cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ../ && \
     make -j $(nproc) && \
     make install
 
@@ -33,7 +33,7 @@ RUN cd /opt/code/siemens_to_ismrmrd && \
 RUN cd /usr/local/lib && tar -czvf libismrmrd.tar.gz libismrmrd*
 
 # ----- Start another clean build without all of the build dependencies of siemens_to_ismrmrd -----
-FROM ubuntu:latest
+FROM ubuntu:24.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends libxslt1.1 libhdf5-dev libpugixml-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
 
